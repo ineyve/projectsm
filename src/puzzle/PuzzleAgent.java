@@ -1,31 +1,31 @@
-package eightpuzzle;
+package puzzle;
 
 import agent.Agent;
 import java.io.File;
 import java.io.IOException;
 
-public class EightPuzzleAgent extends Agent<EightPuzzleState>{
+public class PuzzleAgent extends Agent<PuzzleState>{
     
-    protected EightPuzzleState initialEnvironment;    
+    protected PuzzleState initialEnvironment;    
     
-    public EightPuzzleAgent(EightPuzzleState environemt) {
+    public PuzzleAgent(PuzzleState environemt) {
         super(environemt);
-        initialEnvironment = (EightPuzzleState) environemt.clone();
+        initialEnvironment = (PuzzleState) environemt.clone();
         heuristics.add(new HeuristicTileDistance());
         heuristics.add(new HeuristicTilesOutOfPlace());
         heuristic = heuristics.get(0);
     }
             
-    public EightPuzzleState resetEnvironment(){
-        environment = (EightPuzzleState) initialEnvironment.clone();
+    public PuzzleState resetEnvironment(){
+        environment = (PuzzleState) initialEnvironment.clone();
         return environment;
     }
                  
-    public EightPuzzleState readInitialStateFromFile(File file) throws IOException {
+    public PuzzleState readInitialStateFromFile(File file) throws IOException {
         java.util.Scanner scanner = new java.util.Scanner(file);
-        int linha= 0;
-           int tamanho = scanner.nextInt();
-           scanner.nextLine();
+        int linha = 0;
+        int tamanho = scanner.nextInt();
+        scanner.nextLine();
         int[][] matrix = new int [tamanho][tamanho];
         
         for (int i = 0; i < tamanho; i++) {
@@ -36,8 +36,8 @@ public class EightPuzzleAgent extends Agent<EightPuzzleState>{
             }
             scanner.nextLine();
         }
-        matrix[linha][tamanho-1] =10;
-        initialEnvironment = new EightPuzzleState(matrix);
+        matrix[linha][tamanho-1] = 10;
+        initialEnvironment = new PuzzleState(matrix);
         resetEnvironment();
         return environment;
     }

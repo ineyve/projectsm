@@ -1,29 +1,32 @@
-package eightpuzzle;
+package puzzle;
 
 import agent.Action;
 import agent.State;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class EightPuzzleState extends State implements Cloneable {
-
-  //  static final int[][] goalMatrix = {{0, 1, 2},
-                                //       {3, 4, 5},
-                                //       {6, 7, 8}};
+public class PuzzleState extends State implements Cloneable {
+    static final int[][] goalMatrix =  {{0,0,0,0,0,0},
+                                        {0,0,0,0,0,0},
+                                        {0,0,0,0,3,0},
+                                        {0,0,0,0,0,0},
+                                        {0,0,0,0,0,1},
+                                        {0,0,0,0,0,0}
+    };
    // static final int[] linesfinalMatrix = {0, 0, 0, 1, 1, 1, 2, 2, 2};
    // static final int[] colsfinalMatrix = {0, 1, 2, 0, 1, 2, 0, 1, 2};
-    public static final int SIZE = 3;
+    public static final int SIZE = 6;
     private int[][] matrix;
     private int lineBlank;
     private int columnBlank;
 
-    public EightPuzzleState(int[][] matrix) {
+    public PuzzleState(int[][] matrix) {
         this.matrix = new int[matrix.length][matrix.length];
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
                 this.matrix[i][j] = matrix[i][j];
-                if (this.matrix[i][j] == 0) {
+                if (this.matrix[i][j] == 1) {
                     lineBlank = i;
                     columnBlank = j;
                 }
@@ -37,19 +40,31 @@ public class EightPuzzleState extends State implements Cloneable {
     }
 
     public boolean canMoveUp() {
-        return lineBlank != 0;
+        if(lineBlank!=0)
+            if(this.matrix[lineBlank - 1][columnBlank]==0)
+                return true;
+        return false;
     }
 
     public boolean canMoveRight() {
-        return columnBlank != matrix.length - 1;
+        if(columnBlank<matrix.length-1)
+            if(this.matrix[lineBlank][columnBlank + 1]==0)
+                return true;
+        return false;
     }
 
     public boolean canMoveDown() {
-        return lineBlank != matrix.length - 1;
+        if(lineBlank<matrix.length-1)
+            if(this.matrix[lineBlank + 1][columnBlank]==0)
+                return true;
+        return false;
     }
 
     public boolean canMoveLeft() {
-        return columnBlank != 0;
+        if(columnBlank!=0)
+            if(this.matrix[lineBlank][columnBlank -1]==0)
+                return true;
+        return false;
     }
 
     /*
@@ -59,23 +74,31 @@ public class EightPuzzleState extends State implements Cloneable {
      * state was created whether the operation could be executed or not.
      */
     public void moveUp() {
+        int aux = matrix[lineBlank][columnBlank];
         matrix[lineBlank][columnBlank] = matrix[--lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = 0;
+        matrix[lineBlank][columnBlank] = aux;
+        System.out.println("UP:"+lineBlank+"|||||"+columnBlank);
     }
 
     public void moveRight() {
+        int aux = matrix[lineBlank][columnBlank];
         matrix[lineBlank][columnBlank] = matrix[lineBlank][++columnBlank];
-        matrix[lineBlank][columnBlank] = 0;
+        matrix[lineBlank][columnBlank] = aux;
+        System.out.println("RIGHT:"+lineBlank+"|||||"+columnBlank);
     }
 
     public void moveDown() {
+        int aux = matrix[lineBlank][columnBlank];
         matrix[lineBlank][columnBlank] = matrix[++lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = 0;
+        matrix[lineBlank][columnBlank] = aux;
+        System.out.println("DOWN:"+lineBlank+"|||||"+columnBlank);
     }
 
     public void moveLeft() {
+        int aux = matrix[lineBlank][columnBlank];
         matrix[lineBlank][columnBlank] = matrix[lineBlank][--columnBlank];
-        matrix[lineBlank][columnBlank] = 0;
+        matrix[lineBlank][columnBlank] = aux;
+        System.out.println("LEFT:"+lineBlank+"|||||"+columnBlank);
     }
 
     public int getNumLines() {
@@ -101,11 +124,11 @@ public class EightPuzzleState extends State implements Cloneable {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof EightPuzzleState)) {
+        if (!(other instanceof PuzzleState)) {
             return false;
         }
 
-        EightPuzzleState o = (EightPuzzleState) other;
+        PuzzleState o = (PuzzleState) other;
         if (matrix.length != o.matrix.length) {
             return false;
         }
@@ -133,31 +156,34 @@ public class EightPuzzleState extends State implements Cloneable {
 
     @Override
     public Object clone() {
-        return new EightPuzzleState(matrix);
+        return new PuzzleState(matrix);
     }
     //Listeners
-    private transient ArrayList<EightPuzzleListener> listeners = new ArrayList<EightPuzzleListener>(3);
+    private transient ArrayList<PuzzleListener> listeners = new ArrayList<PuzzleListener>(3);
 
-    public synchronized void removeListener(EightPuzzleListener l) {
+    public synchronized void removeListener(PuzzleListener l) {
         if (listeners != null && listeners.contains(l)) {
             listeners.remove(l);
         }
     }
 
-    public synchronized void addListener(EightPuzzleListener l) {
+    public synchronized void addListener(PuzzleListener l) {
         if (!listeners.contains(l)) {
             listeners.add(l);
         }
     }
 
-    public void firePuzzleChanged(EightPuzzleEvent pe) {
-        for (EightPuzzleListener listener : listeners) {
+    public void firePuzzleChanged(PuzzleEvent pe) {
+        for (PuzzleListener listener : listeners) {
             listener.puzzleChanged(null);
         }
     }
 
     int getColumnCar() {
-       //TODO
-       return 0;
+        for (int i = 0; i < matrix.length; i++) {
+            if(matrix[2][i]==1)
+                return i;
+        }
+        return 0;
     }
 }

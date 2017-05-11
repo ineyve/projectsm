@@ -2,9 +2,9 @@ package gui;
 
 import agent.Heuristic;
 import agent.Solution;
-import eightpuzzle.EightPuzzleAgent;
-import eightpuzzle.EightPuzzleProblem;
-import eightpuzzle.EightPuzzleState;
+import puzzle.PuzzleAgent;
+import puzzle.PuzzleProblem;
+import puzzle.PuzzleState;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -33,9 +33,13 @@ import searchmethods.SearchMethod;
 
 public class MainFrame extends JFrame {
 
-    private int[][] initialMatrix = {{0, 0, 0, 2 , 0, 0}, {0, 0, 8, 8, 8,8}, {1, 0, 0, 0, 0, 0}
-    , {0,4,4,3,0,0}, {0, 0, 0 , 0 ,0, 0}, {0,0,0,0,0,0}};
-    private EightPuzzleAgent agent = new EightPuzzleAgent(new EightPuzzleState(initialMatrix));
+    private int[][] initialMatrix = {{0, 0, 0, 0 , 0, 0}, 
+        {0, 0, 0, 0, 0, 0}, 
+        {1, 0, 0, 0, 3, 0}, 
+        {0,0,0,0,0,0}, 
+        {0, 0, 0 , 0 ,0, 0}, 
+        {0,0,0,0,0,0}};
+    private PuzzleAgent agent = new PuzzleAgent(new PuzzleState(initialMatrix));
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
     private JLabel labelSearchParameter = new JLabel("limit/beam size:");
@@ -130,6 +134,7 @@ public class MainFrame extends JFrame {
         try {
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 puzzleTableModel.setPuzzle(agent.readInitialStateFromFile(fc.getSelectedFile()));
+                //initialMatrix = agent.readInitialStateFromFile(fc.getSelectedFile());
                 buttonSolve.setEnabled(true);
                 buttonShowSolution.setEnabled(false);
                 buttonReset.setEnabled(false);
@@ -172,7 +177,7 @@ public class MainFrame extends JFrame {
                 buttonStop.setEnabled(true);
                 try {
                     prepareSearchAlgorithm();
-                    EightPuzzleProblem problem = new EightPuzzleProblem((EightPuzzleState) agent.getEnvironment().clone());
+                    PuzzleProblem problem = new PuzzleProblem((PuzzleState) agent.getEnvironment().clone());
                     agent.solveProblem(problem);
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
