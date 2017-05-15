@@ -8,9 +8,9 @@ import java.util.Arrays;
 public class PuzzleState extends State implements Cloneable {
     static final int[][] goalMatrix =  {{0,0,0,0,0,0},
                                         {0,0,0,0,0,0},
-                                        {0,0,0,0,3,0},
                                         {0,0,0,0,0,0},
-                                        {0,0,0,0,0,1},
+                                        {0,0,0,0,0,0},
+                                        {0,0,0,0,0,0},
                                         {0,0,0,0,0,0}
     };
    // static final int[] linesfinalMatrix = {0, 0, 0, 1, 1, 1, 2, 2, 2};
