@@ -14,6 +14,8 @@ public abstract class GraphSearch<L extends NodeCollection> implements SearchMet
     protected Set<State> explored = new HashSet<State>();
     protected Statistics statistics = new Statistics();    
     protected boolean stopped;
+    
+    
 
     @Override
     public Solution search(Problem problem) {
@@ -35,19 +37,21 @@ public abstract class GraphSearch<L extends NodeCollection> implements SearchMet
         return failure
      */
     protected Solution graphSearch(Problem problem) {
+        statistics.reset();
         frontier.clear();
-        
         explored.clear();
-        frontier.add(new Node(problem.getInitialState()));
+        frontier.add(new Node (problem.getInitialState()) );
         while(!frontier.isEmpty() && !stopped){
-            Node n = frontier.poll();
-            if(problem.isGoal(n.getState())){
-                return new Solution(problem ,n);
+            Node n= frontier.poll();
+            if (problem.isGoal(n.getState())){
+                
+                return new Solution(problem, n);
             }
             explored.add(n.getState());
-            List<State> successors = problem.executeActions(n.getState());
+            List<State> successors= problem.executeActions(n.getState());
             addSuccessorsToFrontier(successors, n);
             computeStatistics(successors.size());
+            
         }
         return null;
     }

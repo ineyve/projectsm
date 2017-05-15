@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
 
     private int[][] initialMatrix = {{0, 0, 0, 0 , 0, 0}, 
         {0, 0, 0, 0, 0, 0}, 
-        {1, 0, 0, 0, 3, 0}, 
+        {1, 0, 0, 0, 0, 0}, 
         {0,0,0,0,0,0}, 
         {0, 0, 0 , 0 ,0, 0}, 
         {0,0,0,0,0,0}};

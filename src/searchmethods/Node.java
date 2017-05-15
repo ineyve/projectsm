@@ -6,7 +6,7 @@ public class Node implements Comparable<Node> {
 
     private State state;
     private double cost;
-    private double f;  //numero de peças que estão fora do lugar
+    private double f;
     private Node parent;
     private int depth;
 
