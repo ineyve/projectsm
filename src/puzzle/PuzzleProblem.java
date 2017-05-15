@@ -16,7 +16,6 @@ public class PuzzleProblem extends Problem<PuzzleState> {
         actions.add(new ActionRight());
         actions.add(new ActionDown());
         actions.add(new ActionLeft());
-        this.goalState = new PuzzleState((PuzzleState.goalMatrix));
     }
 
     @Override

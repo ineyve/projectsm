@@ -27,11 +27,10 @@ public class PuzzleTileCellRenderer extends JLabel implements TableCellRenderer 
        ImageLoader loader = ImageLoader.getLoader();
        setText("");
        
-       //substituir por um switch
-       switch(((Integer) value).intValue()){
-            case 0:
-                setIcon(loader.getIcon(Properties.EMPTY_IMAGE));
-                break;
+        if(row == 2 && column ==5)
+           setIcon(loader.getIcon(Properties.DOOR));
+        else
+        switch(((Integer) value).intValue()){
             case 1:
                setIcon(loader.getIcon(Properties.FORKLIFT));
                break;
@@ -58,10 +57,12 @@ public class PuzzleTileCellRenderer extends JLabel implements TableCellRenderer 
                break;
             case 9:
                setIcon(loader.getIcon(Properties.BOX4_V));
-               break;
-                       
+               break;     
+            default:
+                setIcon(loader.getIcon(Properties.EMPTY_IMAGE));
+                break;
            //setIcon(loader.getIcon(Properties.IMAGE_PREFIX + ((Integer) value).intValue() + Properties.IMAGE_SUFFIX));
-       }
+        }
         return this;
     }
 }
