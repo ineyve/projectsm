@@ -27,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import puzzle.ArrayIds;
 import searchmethods.BeamSearch;
 import searchmethods.DepthLimitedSearch;
 import searchmethods.SearchMethod;
@@ -34,11 +35,12 @@ import searchmethods.SearchMethod;
 public class MainFrame extends JFrame {
 
     private int[][] initialMatrix = {{0, 0, 0, 0 , 0, 0}, 
+        {0, 0, 0, 4, 0, 0}, 
+        {1, 0, 0, 3, 0, 0}, 
+        {0, 0, 0, 2, 0, 0}, 
         {0, 0, 0, 0, 0, 0}, 
-        {1, 0, 0, 0, 0, 0}, 
-        {0,0,0,0,0,0}, 
-        {0, 0, 0 , 0 ,0, 0}, 
-        {0,0,0,0,0,0}};
+        {0, 0, 0, 0, 0, 0}};
+    
     private PuzzleAgent agent = new PuzzleAgent(new PuzzleState(initialMatrix));
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
