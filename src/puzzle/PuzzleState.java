@@ -16,22 +16,24 @@ public class PuzzleState extends State implements Cloneable {
 
     //foreach peças todas -> mostrar no ecrã > criar sucessores -> executeActions
     public PuzzleState(int[][][] matrix) {
-        lineBlank = new int[20];
-        columnBlank = new int[20];
-        int[] count = new int[20];
-        System.out.println(ArrayIds.matrixToString(matrix));
-        for(int a=0;a<count.length;a++) count[a]=0;
+        lineBlank = new int[40];
+        columnBlank = new int[40];
+        ArrayList<Integer> searchIds = new ArrayList<Integer>();
+        //System.out.println(ArrayIds.matrixToString(matrix));
         
         this.matrix = new int[matrix.length][matrix.length][2];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
-                this.matrix[i][j][0] = matrix[i][j][0];
-                this.matrix[i][j][1] = matrix[i][j][1];
+                this.matrix[i][j][0] = matrix[i][j][0]; //Get the piece ID               
+                this.matrix[i][j][1] = matrix[i][j][1]; //Get the piece Type
                 
                 int id = this.matrix[i][j][0];
-                if (this.matrix[i][j][1] != 0) {
-                    lineBlank[id] = i;
+                Boolean repeating = searchIds.contains(id);
+                
+                if (this.matrix[i][j][0] != 0 && repeating == false) { //Put coordinates on array, each ID is a cell
+                    lineBlank[id] = i; 
                     columnBlank[id] = j;
+                    searchIds.add(id);
                 }
             }
         }
@@ -42,143 +44,265 @@ public class PuzzleState extends State implements Cloneable {
         firePuzzleChanged(null);
     }
 
-    public boolean canMoveUp(int el) {
-        if (lineBlank[el] > 0) {
-            if (this.matrix[lineBlank[el] - 1][columnBlank[el]][1] == 0) {
+    public boolean canMoveUp(int id) {
+        if (lineBlank[id] > 0) {
+            if (this.matrix[lineBlank[id] - 1][columnBlank[id]][0] == 0) { //Works, even for multiple pieces
                 return true;
             }
         }
         return false;
     }
 
-    public boolean canMoveRight(int el) {
-        if (columnBlank[el] < matrix.length - 1) {
-            if (this.matrix[lineBlank[el]][columnBlank[el] + 1][1] == 0) {
-                //Check for multiple pieces
+    public boolean canMoveRight(int id) {
+        int ownId = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        if(ownId == 4 && columnBlank[id] + 1 < matrix.length-1) //multiple pieces
+        {
+            if (this.matrix[lineBlank[id]][columnBlank[id] + 2][1] == 0) {
                 return true;
             }
         }
-        return false;
-    }
-
-    public boolean canMoveDown(int el) {
-        if (lineBlank[el] < matrix.length - 1) {
-            int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
-            if (this.matrix[lineBlank[el] + 1][columnBlank[el]][1] == 0) {
-                //Check for multiple pieces
-                if(ownId == 5 && lineBlank[el] + 1 < matrix.length-1)
+        else if(ownId == 6 && columnBlank[id] + 2 < matrix.length-1) //multiple pieces
+        {   
+            if (this.matrix[lineBlank[id]][columnBlank[id] + 3][1] == 0) {
+                return true;
+            }
+        }
+        else if(ownId == 8 && columnBlank[id] + 3 < matrix.length-1) //multiple pieces
+        {
+            if (this.matrix[lineBlank[id]][columnBlank[id] + 4][1] == 0) {
+                return true;
+            }
+        }
+        else if(ownId == 3 || ownId == 1) //single cell
+        {
+            if (columnBlank[id] < matrix.length-1) {
+                if (this.matrix[lineBlank[id]][columnBlank[id] + 1][1] == 0) {
                     return true;
-                else if(ownId == 3)
-                    return true;
-                else
-                    return false;
+                }
             }
         }
         return false;
     }
 
-    public boolean canMoveLeft(int el) {
-        if (columnBlank[el] > 0) {
-            if (this.matrix[lineBlank[el]][columnBlank[el] - 1][1] == 0) {
+    public boolean canMoveDown(int id) {
+        
+        //CODE SHOULD BE OPTIMIZED!!!
+        
+        int ownId = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        if(ownId == 5 && lineBlank[id] + 1 < matrix.length-1) //multiple pieces
+        { 
+            if (this.matrix[lineBlank[id] + 2][columnBlank[id]][1] == 0) {
+                return true;
+            }
+        }
+        else if(ownId == 7 && lineBlank[id] + 2 < matrix.length-1) //multiple pieces
+        {
+            if (this.matrix[lineBlank[id] + 3][columnBlank[id]][1] == 0) {
+                return true;
+            }
+        }
+        else if(ownId == 9 && lineBlank[id] + 3 < matrix.length-1) //multiple pieces
+        {
+            if (this.matrix[lineBlank[id] + 4][columnBlank[id]][1] == 0) {
+                return true;
+            }
+        }
+        else if(ownId == 3) //single cell
+        {
+            if (lineBlank[id] < matrix.length - 1) {
+                if (this.matrix[lineBlank[id] + 1][columnBlank[id]][1] == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean canMoveLeft(int id) {
+        if (columnBlank[id] > 0) {
+            if (this.matrix[lineBlank[id]][columnBlank[id] - 1][1] == 0) { //Works, even for multiple pieces
                 return true;
             }
         }
         return false;
     }
 
-    /*
+    /* 
+     * Auto-generated comment?
      * In the next four methods we don't verify if the actions are valid.
      * This is done in method executeActions in class EightPuzzleProblem.
      * Doing the verification in these methods would imply that a clone of the
      * state was created whether the operation could be executed or not.
      */
-    public void moveUp(int el) {
+    
+    public void moveUp(int id) {
         if(DEBUG_)System.out.print("\nU"+ArrayIds.matrixToString(matrix)+"\n");
+        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
         
-        int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
+        //Get piece size knowing it's type
         int pieces = 1;
-        if(ownId == 5)
-        {
-            pieces = 2;
-        }
-        else if(ownId == 7)
-        {
-            pieces = 3;
-        }
-        else if(ownId == 9)
-        {
-            pieces = 4;
+        switch (type) {
+            case 5:
+                pieces = 2;
+                break;
+            case 7:
+                pieces = 3;
+                break;
+            case 9:
+                pieces = 4;
+                break;
+            default:
+                break;
         }
         int aux;
-        for(int c = 0; c < pieces; c++)
+        if(pieces > 1) //If it's a big piece
         {
-            aux = matrix[lineBlank[el]+c][columnBlank[el]][0];
-            matrix[lineBlank[el]+c][columnBlank[el]][0] = matrix[lineBlank[el]-1+c][columnBlank[el]][0];
-            matrix[lineBlank[el]-1+c][columnBlank[el]][0] = aux;
-
-            aux = matrix[lineBlank[el]+c][columnBlank[el]][1];
-            matrix[lineBlank[el]+c][columnBlank[el]][1] = matrix[--lineBlank[el]+c][columnBlank[el]][1];
-            matrix[lineBlank[el]+c][columnBlank[el]][1] = aux;
+            //create another equal cell on top
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]-1][columnBlank[id]][0] = aux;
+            matrix[lineBlank[id]-1][columnBlank[id]][1] = type;
+            
+            //delete the cell below
+            matrix[lineBlank[id]+(pieces-1)][columnBlank[id]][0] = 0;
+            matrix[lineBlank[id]+(pieces-1)][columnBlank[id]][1] = 0;
         }
+        else //If it's a single piece
+        {
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]-1][columnBlank[id]][0] = aux;
+            matrix[lineBlank[id]-1][columnBlank[id]][1] = type;
+            
+            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
+            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
+        }
+        lineBlank[id]--;
     }
 
-    public void moveRight(int el) {
+    public void moveRight(int id) {
         if(DEBUG_)System.out.print("\nR"+ArrayIds.matrixToString(matrix)+"\n");
-        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
-        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]][columnBlank[el]+1][0];
-        matrix[lineBlank[el]][columnBlank[el]+1][0] = aux;
-		
-		aux = matrix[lineBlank[el]][columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[lineBlank[el]][++columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = aux;
-    }
-
-    public void moveDown(int el) {
-        if(DEBUG_)System.out.print("\nD"+ArrayIds.matrixToString(matrix)+"\n");
-        int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
+        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
         int pieces = 1;
-        if(ownId == 5)
-        {
-            pieces = 2;
-        }
-        else if(ownId == 7)
-        {
-            pieces = 3;
-        }
-        else if(ownId == 9)
-        {
-            pieces = 4;
+        switch (type) {
+            case 4:
+                pieces = 2;
+                break;
+            case 6:
+                pieces = 3;
+                break;
+            case 8:
+                pieces = 4;
+                break;
+            default:
+                break;
         }
         int aux;
-        for(int c = 0; c < pieces; c++)
+        if(pieces > 1) //If it's a big piece
         {
-            aux = matrix[lineBlank[el]+c][columnBlank[el]][0];
-            matrix[lineBlank[el]+c][columnBlank[el]][0] = matrix[lineBlank[el]+1+c][columnBlank[el]][0];
-            matrix[lineBlank[el]+1+c][columnBlank[el]][0] = aux;
-
-            aux = matrix[lineBlank[el]+c][columnBlank[el]][1];
-            matrix[lineBlank[el]+c][columnBlank[el]][1] = matrix[++lineBlank[el]+c][columnBlank[el]][1];
-            matrix[lineBlank[el]+c][columnBlank[el]][1] = aux;
+            //create another equal cell on left
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
+            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
+            
+            //delete the cell at the end
+            matrix[lineBlank[id]][columnBlank[id]+pieces][0] = aux;
+            matrix[lineBlank[id]][columnBlank[id]+pieces][1] = type;
+            
         }
-        /*
-        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
-        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]+1][columnBlank[el]][0];
-        matrix[lineBlank[el]+1][columnBlank[el]][0] = aux;
+        else //If it's a single piece, simply switches place
+        {
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]][columnBlank[id]+1][0];
+            matrix[lineBlank[id]][columnBlank[id]+1][0] = aux;
 		
-		aux = matrix[lineBlank[el]][columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[++lineBlank[el]][columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = aux;*/
+            aux = matrix[lineBlank[id]][columnBlank[id]][1];
+            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]][columnBlank[id]+1][1];
+            matrix[lineBlank[id]][columnBlank[id]+1][1] = aux;
+        }
+        columnBlank[id]++;
     }
 
-    public void moveLeft(int el) {
+    public void moveDown(int id) {
+        if(DEBUG_)System.out.print("\nD"+ArrayIds.matrixToString(matrix)+"\n");
+        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        
+        int pieces = 1;
+        switch (type) {
+            case 5:
+                pieces = 2;
+                break;
+            case 7:
+                pieces = 3;
+                break;
+            case 9:
+                pieces = 4;
+                break;
+            default:
+                break;
+        }
+        int aux;
+        if(pieces > 1)
+        {
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
+            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
+
+            matrix[lineBlank[id]+pieces][columnBlank[id]][0] = aux;
+            matrix[lineBlank[id]+pieces][columnBlank[id]][1] = type;
+        }
+        else
+        {
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]+1][columnBlank[id]][0];
+            matrix[lineBlank[id]+1][columnBlank[id]][0] = aux;
+
+            aux = matrix[lineBlank[id]][columnBlank[id]][1];
+            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]+1][columnBlank[id]][1];
+            matrix[lineBlank[id]+1][columnBlank[id]][1] = aux;
+        }
+        lineBlank[id]++;
+    }
+
+    public void moveLeft(int id) {
         if(DEBUG_)System.out.print("\nL"+ArrayIds.matrixToString(matrix)+"\n");
-        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
-        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]][columnBlank[el]-1][0];
-        matrix[lineBlank[el]][columnBlank[el]-1][0] = aux;
+        
+        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        int pieces = 1;
+        switch (type) {
+            case 4:
+                pieces = 2;
+                break;
+            case 6:
+                pieces = 3;
+                break;
+            case 8:
+                pieces = 4;
+                break;
+            default:
+                break;
+        }
+        int aux;
+        if(pieces > 1) //If it's a big piece
+        {
+            //create another equal cell on left
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]-1][0] = aux;
+            matrix[lineBlank[id]][columnBlank[id]-1][1] = type;
+            
+            //delete the cell at the end
+            matrix[lineBlank[id]][columnBlank[id]+(pieces-1)][0] = 0;
+            matrix[lineBlank[id]][columnBlank[id]+(pieces-1)][1] = 0;
+        }
+        else //If it's a single piece
+        {
+            aux = matrix[lineBlank[id]][columnBlank[id]][0];
+            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]][columnBlank[id]-1][0];
+            matrix[lineBlank[id]][columnBlank[id]-1][0] = aux;
 		
-		aux = matrix[lineBlank[el]][columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[lineBlank[el]][--columnBlank[el]][1];
-        matrix[lineBlank[el]][columnBlank[el]][1] = aux;
+            aux = matrix[lineBlank[id]][columnBlank[id]][1];
+            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]][columnBlank[id]-1][1];
+            matrix[lineBlank[id]][columnBlank[id]-1][1] = aux;
+        }
+        columnBlank[id]--;
     }
 
     public int getNumLines() {
