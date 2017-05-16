@@ -5,21 +5,33 @@ import agent.State;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PuzzleState extends State implements Cloneable {    
+public class PuzzleState extends State implements Cloneable {
+
+    private Boolean DEBUG_ = false;
+    
     public static final int SIZE = 6;
-    private int[][] matrix;
-    private int lineBlank;
-    private int columnBlank;
+    private int[][][] matrix;
+    private int[] lineBlank;
+    private int[] columnBlank;
 
-    public PuzzleState(int[][] matrix) {
-        this.matrix = new int[matrix.length][matrix.length];
-
+    //foreach peças todas -> mostrar no ecrã > criar sucessores -> executeActions
+    public PuzzleState(int[][][] matrix) {
+        lineBlank = new int[20];
+        columnBlank = new int[20];
+        int[] count = new int[20];
+        System.out.println(ArrayIds.matrixToString(matrix));
+        for(int a=0;a<count.length;a++) count[a]=0;
+        
+        this.matrix = new int[matrix.length][matrix.length][2];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
-                this.matrix[i][j] = matrix[i][j];
-                if (this.matrix[i][j] == 1) {
-                    lineBlank = i;
-                    columnBlank = j;
+                this.matrix[i][j][0] = matrix[i][j][0];
+                this.matrix[i][j][1] = matrix[i][j][1];
+                
+                int id = this.matrix[i][j][0];
+                if (this.matrix[i][j][1] != 0) {
+                    lineBlank[id] = i;
+                    columnBlank[id] = j;
                 }
             }
         }
@@ -30,31 +42,47 @@ public class PuzzleState extends State implements Cloneable {
         firePuzzleChanged(null);
     }
 
-    public boolean canMoveUp() {
-        if(lineBlank!=0)
-            if(this.matrix[lineBlank - 1][columnBlank]==0)
+    public boolean canMoveUp(int el) {
+        if (lineBlank[el] > 0) {
+            if (this.matrix[lineBlank[el] - 1][columnBlank[el]][1] == 0) {
                 return true;
+            }
+        }
         return false;
     }
 
-    public boolean canMoveRight() {
-        if(columnBlank<matrix.length-1)
-            if(this.matrix[lineBlank][columnBlank + 1]==0)
+    public boolean canMoveRight(int el) {
+        if (columnBlank[el] < matrix.length - 1) {
+            if (this.matrix[lineBlank[el]][columnBlank[el] + 1][1] == 0) {
+                //Check for multiple pieces
                 return true;
+            }
+        }
         return false;
     }
 
-    public boolean canMoveDown() {
-        if(lineBlank<matrix.length-1)
-            if(this.matrix[lineBlank + 1][columnBlank]==0)
-                return true;
+    public boolean canMoveDown(int el) {
+        if (lineBlank[el] < matrix.length - 1) {
+            int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
+            if (this.matrix[lineBlank[el] + 1][columnBlank[el]][1] == 0) {
+                //Check for multiple pieces
+                if(ownId == 5 && lineBlank[el] + 1 < matrix.length-1)
+                    return true;
+                else if(ownId == 3)
+                    return true;
+                else
+                    return false;
+            }
+        }
         return false;
     }
 
-    public boolean canMoveLeft() {
-        if(columnBlank!=0)
-            if(this.matrix[lineBlank][columnBlank -1]==0)
+    public boolean canMoveLeft(int el) {
+        if (columnBlank[el] > 0) {
+            if (this.matrix[lineBlank[el]][columnBlank[el] - 1][1] == 0) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -64,32 +92,93 @@ public class PuzzleState extends State implements Cloneable {
      * Doing the verification in these methods would imply that a clone of the
      * state was created whether the operation could be executed or not.
      */
-    public void moveUp() {
-        int aux = matrix[lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = matrix[--lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = aux;
-        System.out.println("UP:"+lineBlank+"|||||"+columnBlank);
+    public void moveUp(int el) {
+        if(DEBUG_)System.out.print("\nU"+ArrayIds.matrixToString(matrix)+"\n");
+        
+        int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
+        int pieces = 1;
+        if(ownId == 5)
+        {
+            pieces = 2;
+        }
+        else if(ownId == 7)
+        {
+            pieces = 3;
+        }
+        else if(ownId == 9)
+        {
+            pieces = 4;
+        }
+        int aux;
+        for(int c = 0; c < pieces; c++)
+        {
+            aux = matrix[lineBlank[el]+c][columnBlank[el]][0];
+            matrix[lineBlank[el]+c][columnBlank[el]][0] = matrix[lineBlank[el]-1+c][columnBlank[el]][0];
+            matrix[lineBlank[el]-1+c][columnBlank[el]][0] = aux;
+
+            aux = matrix[lineBlank[el]+c][columnBlank[el]][1];
+            matrix[lineBlank[el]+c][columnBlank[el]][1] = matrix[--lineBlank[el]+c][columnBlank[el]][1];
+            matrix[lineBlank[el]+c][columnBlank[el]][1] = aux;
+        }
     }
 
-    public void moveRight() {
-        int aux = matrix[lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = matrix[lineBlank][++columnBlank];
-        matrix[lineBlank][columnBlank] = aux;
-        System.out.println("RIGHT:"+lineBlank+"|||||"+columnBlank);
+    public void moveRight(int el) {
+        if(DEBUG_)System.out.print("\nR"+ArrayIds.matrixToString(matrix)+"\n");
+        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
+        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]][columnBlank[el]+1][0];
+        matrix[lineBlank[el]][columnBlank[el]+1][0] = aux;
+		
+		aux = matrix[lineBlank[el]][columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[lineBlank[el]][++columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = aux;
     }
 
-    public void moveDown() {
-        int aux = matrix[lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = matrix[++lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = aux;
-        System.out.println("DOWN:"+lineBlank+"|||||"+columnBlank);
+    public void moveDown(int el) {
+        if(DEBUG_)System.out.print("\nD"+ArrayIds.matrixToString(matrix)+"\n");
+        int ownId = this.matrix[lineBlank[el]][columnBlank[el]][1];
+        int pieces = 1;
+        if(ownId == 5)
+        {
+            pieces = 2;
+        }
+        else if(ownId == 7)
+        {
+            pieces = 3;
+        }
+        else if(ownId == 9)
+        {
+            pieces = 4;
+        }
+        int aux;
+        for(int c = 0; c < pieces; c++)
+        {
+            aux = matrix[lineBlank[el]+c][columnBlank[el]][0];
+            matrix[lineBlank[el]+c][columnBlank[el]][0] = matrix[lineBlank[el]+1+c][columnBlank[el]][0];
+            matrix[lineBlank[el]+1+c][columnBlank[el]][0] = aux;
+
+            aux = matrix[lineBlank[el]+c][columnBlank[el]][1];
+            matrix[lineBlank[el]+c][columnBlank[el]][1] = matrix[++lineBlank[el]+c][columnBlank[el]][1];
+            matrix[lineBlank[el]+c][columnBlank[el]][1] = aux;
+        }
+        /*
+        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
+        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]+1][columnBlank[el]][0];
+        matrix[lineBlank[el]+1][columnBlank[el]][0] = aux;
+		
+		aux = matrix[lineBlank[el]][columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[++lineBlank[el]][columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = aux;*/
     }
 
-    public void moveLeft() {
-        int aux = matrix[lineBlank][columnBlank];
-        matrix[lineBlank][columnBlank] = matrix[lineBlank][--columnBlank];
-        matrix[lineBlank][columnBlank] = aux;
-        System.out.println("LEFT:"+lineBlank+"|||||"+columnBlank);
+    public void moveLeft(int el) {
+        if(DEBUG_)System.out.print("\nL"+ArrayIds.matrixToString(matrix)+"\n");
+        int aux = matrix[lineBlank[el]][columnBlank[el]][0];
+        matrix[lineBlank[el]][columnBlank[el]][0] = matrix[lineBlank[el]][columnBlank[el]-1][0];
+        matrix[lineBlank[el]][columnBlank[el]-1][0] = aux;
+		
+		aux = matrix[lineBlank[el]][columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = matrix[lineBlank[el]][--columnBlank[el]][1];
+        matrix[lineBlank[el]][columnBlank[el]][1] = aux;
     }
 
     public int getNumLines() {
@@ -101,12 +190,12 @@ public class PuzzleState extends State implements Cloneable {
     }
 
     public int getTileValue(int line, int column) {
-        
+
         //verificar se naquela linha já está código do mesmo tipo
         if (!isValidPosition(line, column)) {
             throw new IndexOutOfBoundsException("Invalid position!");
         }
-        return matrix[line][column];
+        return matrix[line][column][1];
     }
 
     public boolean isValidPosition(int line, int column) {
@@ -172,8 +261,9 @@ public class PuzzleState extends State implements Cloneable {
 
     int getColumnCar() {
         for (int i = 0; i < matrix.length; i++) {
-            if(matrix[2][i]==1)
+            if (matrix[2][i][1] == 1) {
                 return i;
+            }
         }
         return 0;
     }
