@@ -12,6 +12,7 @@ public class IDAStarSearch extends InformedSearch {
      */
     private double limit;
     private double newLimit;
+    private int stop = 0;
 
     @Override
     public Solution search(Problem problem) {
@@ -23,8 +24,9 @@ public class IDAStarSearch extends InformedSearch {
         Solution solution;
 
         do {
-            solution = graphSearch(problem);
-        } while (solution == null);
+            solution = graphSearch(problem); 
+            stop++;
+        } while (solution == null && stop<600);
 
         return solution;
     }
@@ -35,7 +37,7 @@ public class IDAStarSearch extends InformedSearch {
         frontier.clear();
         frontier.add(new Node(problem.getInitialState()));
 
-        while (!frontier.isEmpty() && !stopped) {
+        while (!frontier.isEmpty() && !stopped ) {   
             Node n = frontier.poll();
             if ( problem.isGoal(n.getState())) {
                 return new Solution(problem, n);
@@ -44,8 +46,8 @@ public class IDAStarSearch extends InformedSearch {
             List<State> successors = problem.executeActions(n.getState());
             addSuccessorsToFrontier(successors, n);
             computeStatistics(successors.size());
-
         }
+        
         limit=newLimit;
         return null;
     }

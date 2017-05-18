@@ -91,6 +91,8 @@ public class PuzzleState extends State implements Cloneable {
         
         //CODE SHOULD BE OPTIMIZED!!!
         
+       
+        
         int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
         if(type == 5 && linesPieces[id] + 1 < matrix.length-1) //multiple pieces
         { 
@@ -110,14 +112,18 @@ public class PuzzleState extends State implements Cloneable {
                 return true;
             }
         }
+        
         else if(type == 3) //single cell
         {
+            
+        }
             if (linesPieces[id] < matrix.length - 1) {
                 if (this.matrix[linesPieces[id] + 1][columnsPieces[id]][1] == 0) {
                     return true;
                 }
             }
-        }
+        
+        
         return false;
     }
 
