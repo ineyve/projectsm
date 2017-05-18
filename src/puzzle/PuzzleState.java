@@ -21,11 +21,12 @@ public class PuzzleState extends State implements Cloneable {
         ArrayList<Integer> searchIds = new ArrayList<Integer>();
         //System.out.println(ArrayIds.matrixToString(matrix));
         
-        this.matrix = new int[matrix.length][matrix.length][2];
+        this.matrix = new int[matrix.length][matrix.length][3];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
                 this.matrix[i][j][0] = matrix[i][j][0]; //Get the piece ID               
-                this.matrix[i][j][1] = matrix[i][j][1]; //Get the piece Type
+                this.matrix[i][j][1] = matrix[i][j][1]; //Get the piece Type           
+                this.matrix[i][j][2] = matrix[i][j][2]; //Get the piece Image
                 
                 int id = this.matrix[i][j][0];
                 Boolean repeating = searchIds.contains(id);
@@ -264,10 +265,18 @@ public class PuzzleState extends State implements Cloneable {
     public int getTileValue(int line, int column) {
 
         //verificar se naquela linha já está código do mesmo tipo
+        
         if (!isValidPosition(line, column)) {
             throw new IndexOutOfBoundsException("Invalid position!");
         }
-        return matrix[line][column][1];
+        return matrix[line][column][2]; //
+    }
+    
+    public int getTileType(int line, int column) {
+        if (!isValidPosition(line, column)) {
+            throw new IndexOutOfBoundsException("Invalid position!");
+        }
+        return matrix[line][column][1]; 
     }
 
     public boolean isValidPosition(int line, int column) {
