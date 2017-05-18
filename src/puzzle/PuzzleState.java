@@ -11,13 +11,13 @@ public class PuzzleState extends State implements Cloneable {
     
     public static final int SIZE = 6;
     private int[][][] matrix;
-    private int[] lineBlank;
-    private int[] columnBlank;
+    private int[] linesPieces;
+    private int[] columnsPieces;
 
     //foreach peças todas -> mostrar no ecrã > criar sucessores -> executeActions
     public PuzzleState(int[][][] matrix) {
-        lineBlank = new int[40];
-        columnBlank = new int[40];
+        linesPieces = new int[SIZE*SIZE];
+        columnsPieces = new int[SIZE*SIZE];
         ArrayList<Integer> searchIds = new ArrayList<Integer>();
         //System.out.println(ArrayIds.matrixToString(matrix));
         
@@ -30,11 +30,13 @@ public class PuzzleState extends State implements Cloneable {
                 int id = this.matrix[i][j][0];
                 Boolean repeating = searchIds.contains(id);
                 
-                if (this.matrix[i][j][0] != 0 && repeating == false) { //Put coordinates on array, each ID is a cell
-                    lineBlank[id] = i; 
-                    columnBlank[id] = j;
+                if (this.matrix[i][j][1] != 0 && repeating == false) { //Put coordinates on array, each ID is a cell
+                    linesPieces[id] = i; 
+                    columnsPieces[id] = j;
                     searchIds.add(id);
                 }
+                
+                //Code to edit image
             }
         }
     }
@@ -45,8 +47,8 @@ public class PuzzleState extends State implements Cloneable {
     }
 
     public boolean canMoveUp(int id) {
-        if (lineBlank[id] > 0) {
-            if (this.matrix[lineBlank[id] - 1][columnBlank[id]][0] == 0) { //Works, even for multiple pieces
+        if (linesPieces[id] > 0) {
+            if (this.matrix[linesPieces[id] - 1][columnsPieces[id]][1] == 0) { //Works, even for multiple pieces
                 return true;
             }
         }
@@ -54,29 +56,29 @@ public class PuzzleState extends State implements Cloneable {
     }
 
     public boolean canMoveRight(int id) {
-        int ownId = this.matrix[lineBlank[id]][columnBlank[id]][1];
-        if(ownId == 4 && columnBlank[id] + 1 < matrix.length-1) //multiple pieces
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
+        if(type == 4 && columnsPieces[id] + 1 < matrix.length-1) //multiple pieces
         {
-            if (this.matrix[lineBlank[id]][columnBlank[id] + 2][1] == 0) {
+            if (this.matrix[linesPieces[id]][columnsPieces[id] + 2][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 6 && columnBlank[id] + 2 < matrix.length-1) //multiple pieces
+        else if(type == 6 && columnsPieces[id] + 2 < matrix.length-1) //multiple pieces
         {   
-            if (this.matrix[lineBlank[id]][columnBlank[id] + 3][1] == 0) {
+            if (this.matrix[linesPieces[id]][columnsPieces[id] + 3][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 8 && columnBlank[id] + 3 < matrix.length-1) //multiple pieces
+        else if(type == 8 && columnsPieces[id] + 3 < matrix.length-1) //multiple pieces
         {
-            if (this.matrix[lineBlank[id]][columnBlank[id] + 4][1] == 0) {
+            if (this.matrix[linesPieces[id]][columnsPieces[id] + 4][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 3 || ownId == 1) //single cell
+        else if(type == 3 || type == 1) //single cell
         {
-            if (columnBlank[id] < matrix.length-1) {
-                if (this.matrix[lineBlank[id]][columnBlank[id] + 1][1] == 0) {
+            if (columnsPieces[id] < matrix.length-1) {
+                if (this.matrix[linesPieces[id]][columnsPieces[id] + 1][1] == 0) {
                     return true;
                 }
             }
@@ -88,29 +90,29 @@ public class PuzzleState extends State implements Cloneable {
         
         //CODE SHOULD BE OPTIMIZED!!!
         
-        int ownId = this.matrix[lineBlank[id]][columnBlank[id]][1];
-        if(ownId == 5 && lineBlank[id] + 1 < matrix.length-1) //multiple pieces
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
+        if(type == 5 && linesPieces[id] + 1 < matrix.length-1) //multiple pieces
         { 
-            if (this.matrix[lineBlank[id] + 2][columnBlank[id]][1] == 0) {
+            if (this.matrix[linesPieces[id] + 2][columnsPieces[id]][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 7 && lineBlank[id] + 2 < matrix.length-1) //multiple pieces
+        else if(type == 7 && linesPieces[id] + 2 < matrix.length-1) //multiple pieces
         {
-            if (this.matrix[lineBlank[id] + 3][columnBlank[id]][1] == 0) {
+            if (this.matrix[linesPieces[id] + 3][columnsPieces[id]][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 9 && lineBlank[id] + 3 < matrix.length-1) //multiple pieces
+        else if(type == 9 && linesPieces[id] + 3 < matrix.length-1) //multiple pieces
         {
-            if (this.matrix[lineBlank[id] + 4][columnBlank[id]][1] == 0) {
+            if (this.matrix[linesPieces[id] + 4][columnsPieces[id]][1] == 0) {
                 return true;
             }
         }
-        else if(ownId == 3) //single cell
+        else if(type == 3) //single cell
         {
-            if (lineBlank[id] < matrix.length - 1) {
-                if (this.matrix[lineBlank[id] + 1][columnBlank[id]][1] == 0) {
+            if (linesPieces[id] < matrix.length - 1) {
+                if (this.matrix[linesPieces[id] + 1][columnsPieces[id]][1] == 0) {
                     return true;
                 }
             }
@@ -119,8 +121,8 @@ public class PuzzleState extends State implements Cloneable {
     }
 
     public boolean canMoveLeft(int id) {
-        if (columnBlank[id] > 0) {
-            if (this.matrix[lineBlank[id]][columnBlank[id] - 1][1] == 0) { //Works, even for multiple pieces
+        if (columnsPieces[id] > 0) {
+            if (this.matrix[linesPieces[id]][columnsPieces[id] - 1][1] == 0) { //Works, even for multiple pieces
                 return true;
             }
         }
@@ -137,7 +139,7 @@ public class PuzzleState extends State implements Cloneable {
     
     public void moveUp(int id) {
         if(DEBUG_)System.out.print("\nU"+ArrayIds.matrixToString(matrix)+"\n");
-        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
         
         //Get piece size knowing it's type
         int pieces = 1;
@@ -155,32 +157,19 @@ public class PuzzleState extends State implements Cloneable {
                 break;
         }
         int aux;
-        if(pieces > 1) //If it's a big piece
-        {
-            //create another equal cell on top
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]-1][columnBlank[id]][0] = aux;
-            matrix[lineBlank[id]-1][columnBlank[id]][1] = type;
-            
-            //delete the cell below
-            matrix[lineBlank[id]+(pieces-1)][columnBlank[id]][0] = 0;
-            matrix[lineBlank[id]+(pieces-1)][columnBlank[id]][1] = 0;
-        }
-        else //If it's a single piece
-        {
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]-1][columnBlank[id]][0] = aux;
-            matrix[lineBlank[id]-1][columnBlank[id]][1] = type;
-            
-            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
-            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
-        }
-        lineBlank[id]--;
+        aux = matrix[linesPieces[id]+(pieces-1)][columnsPieces[id]][0];
+        matrix[linesPieces[id]+(pieces-1)][columnsPieces[id]][0] = matrix[linesPieces[id]-1][columnsPieces[id]][0];
+        matrix[linesPieces[id]-1][columnsPieces[id]][0] = aux;
+
+        aux = matrix[linesPieces[id]+(pieces-1)][columnsPieces[id]][1];
+        matrix[linesPieces[id]+(pieces-1)][columnsPieces[id]][1] = matrix[linesPieces[id]-1][columnsPieces[id]][1];
+        matrix[linesPieces[id]-1][columnsPieces[id]][1] = aux;
+        linesPieces[id]--;
     }
 
     public void moveRight(int id) {
         if(DEBUG_)System.out.print("\nR"+ArrayIds.matrixToString(matrix)+"\n");
-        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
         int pieces = 1;
         switch (type) {
             case 4:
@@ -196,34 +185,19 @@ public class PuzzleState extends State implements Cloneable {
                 break;
         }
         int aux;
-        if(pieces > 1) //If it's a big piece
-        {
-            //create another equal cell on left
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
-            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
-            
-            //delete the cell at the end
-            matrix[lineBlank[id]][columnBlank[id]+pieces][0] = aux;
-            matrix[lineBlank[id]][columnBlank[id]+pieces][1] = type;
-            
-        }
-        else //If it's a single piece, simply switches place
-        {
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]][columnBlank[id]+1][0];
-            matrix[lineBlank[id]][columnBlank[id]+1][0] = aux;
-		
-            aux = matrix[lineBlank[id]][columnBlank[id]][1];
-            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]][columnBlank[id]+1][1];
-            matrix[lineBlank[id]][columnBlank[id]+1][1] = aux;
-        }
-        columnBlank[id]++;
+        aux = matrix[linesPieces[id]][columnsPieces[id]][0];
+        matrix[linesPieces[id]][columnsPieces[id]][0] = matrix[linesPieces[id]][columnsPieces[id]+pieces][0];
+        matrix[linesPieces[id]][columnsPieces[id]+pieces][0] = aux;
+
+        aux = matrix[linesPieces[id]][columnsPieces[id]][1];
+        matrix[linesPieces[id]][columnsPieces[id]][1] = matrix[linesPieces[id]][columnsPieces[id]+pieces][1];
+        matrix[linesPieces[id]][columnsPieces[id]+pieces][1] = aux;
+        columnsPieces[id]++;
     }
 
     public void moveDown(int id) {
         if(DEBUG_)System.out.print("\nD"+ArrayIds.matrixToString(matrix)+"\n");
-        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
         
         int pieces = 1;
         switch (type) {
@@ -240,32 +214,20 @@ public class PuzzleState extends State implements Cloneable {
                 break;
         }
         int aux;
-        if(pieces > 1)
-        {
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]][0] = 0;
-            matrix[lineBlank[id]][columnBlank[id]][1] = 0;
+        aux = matrix[linesPieces[id]][columnsPieces[id]][0];
+        matrix[linesPieces[id]][columnsPieces[id]][0] = matrix[linesPieces[id]+pieces][columnsPieces[id]][0];
+        matrix[linesPieces[id]+pieces][columnsPieces[id]][0] = aux;
 
-            matrix[lineBlank[id]+pieces][columnBlank[id]][0] = aux;
-            matrix[lineBlank[id]+pieces][columnBlank[id]][1] = type;
-        }
-        else
-        {
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]+1][columnBlank[id]][0];
-            matrix[lineBlank[id]+1][columnBlank[id]][0] = aux;
-
-            aux = matrix[lineBlank[id]][columnBlank[id]][1];
-            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]+1][columnBlank[id]][1];
-            matrix[lineBlank[id]+1][columnBlank[id]][1] = aux;
-        }
-        lineBlank[id]++;
+        aux = matrix[linesPieces[id]][columnsPieces[id]][1];
+        matrix[linesPieces[id]][columnsPieces[id]][1] = matrix[linesPieces[id]+pieces][columnsPieces[id]][1];
+        matrix[linesPieces[id]+pieces][columnsPieces[id]][1] = aux;
+        linesPieces[id]++;
     }
 
     public void moveLeft(int id) {
         if(DEBUG_)System.out.print("\nL"+ArrayIds.matrixToString(matrix)+"\n");
         
-        int type = this.matrix[lineBlank[id]][columnBlank[id]][1];
+        int type = this.matrix[linesPieces[id]][columnsPieces[id]][1];
         int pieces = 1;
         switch (type) {
             case 4:
@@ -280,29 +242,15 @@ public class PuzzleState extends State implements Cloneable {
             default:
                 break;
         }
-        int aux;
-        if(pieces > 1) //If it's a big piece
-        {
-            //create another equal cell on left
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]-1][0] = aux;
-            matrix[lineBlank[id]][columnBlank[id]-1][1] = type;
-            
-            //delete the cell at the end
-            matrix[lineBlank[id]][columnBlank[id]+(pieces-1)][0] = 0;
-            matrix[lineBlank[id]][columnBlank[id]+(pieces-1)][1] = 0;
-        }
-        else //If it's a single piece
-        {
-            aux = matrix[lineBlank[id]][columnBlank[id]][0];
-            matrix[lineBlank[id]][columnBlank[id]][0] = matrix[lineBlank[id]][columnBlank[id]-1][0];
-            matrix[lineBlank[id]][columnBlank[id]-1][0] = aux;
-		
-            aux = matrix[lineBlank[id]][columnBlank[id]][1];
-            matrix[lineBlank[id]][columnBlank[id]][1] = matrix[lineBlank[id]][columnBlank[id]-1][1];
-            matrix[lineBlank[id]][columnBlank[id]-1][1] = aux;
-        }
-        columnBlank[id]--;
+        int aux;     
+        aux = matrix[linesPieces[id]][columnsPieces[id]+(pieces-1)][0];
+        matrix[linesPieces[id]][columnsPieces[id]+(pieces-1)][0] = matrix[linesPieces[id]][columnsPieces[id]-1][0];
+        matrix[linesPieces[id]][columnsPieces[id]-1][0] = aux;
+
+        aux = matrix[linesPieces[id]][columnsPieces[id]+(pieces-1)][1];
+        matrix[linesPieces[id]][columnsPieces[id]+(pieces-1)][1] = matrix[linesPieces[id]][columnsPieces[id]-1][1];
+        matrix[linesPieces[id]][columnsPieces[id]-1][1] = aux;
+        columnsPieces[id]--;
     }
 
     public int getNumLines() {

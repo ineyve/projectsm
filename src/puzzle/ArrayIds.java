@@ -30,7 +30,7 @@ public class ArrayIds {
        
        */
         int[][][] toMatrix = new int[matrix.length][matrix.length][3];
-        int id=1;   
+        int id=0;   
         int largePiece=0;
         for(int l=0; l < matrix.length; l++)
         {

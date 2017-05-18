@@ -37,7 +37,7 @@ public class PuzzleAgent extends Agent<PuzzleState>{
             scanner.nextLine();
         }
         matrix[linha][tamanho-1] = 10;
-        initialEnvironment = new PuzzleState(matrix);
+        initialEnvironment = new PuzzleState(ArrayIds.toMatrixWithIds(matrix));
         resetEnvironment();
         return environment;
     }

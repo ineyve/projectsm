@@ -34,9 +34,9 @@ public class DepthFirstSearch extends GraphSearch<NodeLinkedList> {
     }
 
     public void addSuccessorsToFrontier(List<State> successors, Node parent) {
-    //    for (int i = (successors.size() - 1); i >= 0; i--) {//começa à esquerda
-             for (State s: successors) {// começa pela direita
-           // State s = successors.get(i);
+        for (int i = (successors.size() - 1); i >= 0; i--) {//começa à esquerda
+            //for (State s: successors) {// começa pela direita
+            State s = successors.get(i);
             if (!frontier.containsState(s)) {
                 Node n = new Node(s, parent);
                 if (!n.isCycle()) {

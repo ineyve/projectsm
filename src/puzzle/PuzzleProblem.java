@@ -12,8 +12,18 @@ public class PuzzleProblem extends Problem<PuzzleState> {
     
     public PuzzleProblem(PuzzleState initialState) {
         super(initialState,new ArrayList<Action>() );
-		
-		int id=1;
+	
+        /*
+        Primeiro vai linha a linha encontrar os objetos que andam na horizontal
+        e ativa as ações Right e Left
+        
+        Depois coluna a coluna e ativa as ações Up e Down
+        
+        As peças multiplas têm toda as células com o mesmo Id, mas apenas a 1ª tem ações, e controla as outras
+        
+        */
+        
+        int id=0;
         int largePiece=0;        
         for(int l=0; l < initialState.getNumLines(); l++)
         {
@@ -24,6 +34,7 @@ public class PuzzleProblem extends Problem<PuzzleState> {
                 {
                     switch(val){
                         case 1: case 2: case 4: case 6: case 8:
+                            System.out.println("new Action RL: "+id+"::"+l+":"+c);
                             actions.add(new ActionRight(id));
                             actions.add(new ActionLeft(id));
                             id++;
@@ -57,6 +68,7 @@ public class PuzzleProblem extends Problem<PuzzleState> {
                     
                     switch(val){
                         case 3: case 5: case 7: case 9:
+                            System.out.println("new Action UD: "+id+"::"+l+":"+c);
                             actions.add(new ActionUp(id));
                             actions.add(new ActionDown(id));
                             id++;
@@ -80,7 +92,6 @@ public class PuzzleProblem extends Problem<PuzzleState> {
                 
             }
         }
-        System.out.print("start");
     }
 
     @Override

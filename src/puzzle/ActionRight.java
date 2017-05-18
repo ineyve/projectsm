@@ -4,16 +4,16 @@ import agent.Action;
 
 public class ActionRight extends Action<PuzzleState>{
 
-    public ActionRight(){
-        super(1);
+    public ActionRight(int i){
+        super(1,i);
     }
 
     public void execute(PuzzleState state){
-        state.moveRight();
+        state.moveRight(getElement());
         state.setAction(this);
     }
 
     public boolean isValid(PuzzleState state){
-        return state.canMoveRight();
+        return state.canMoveRight(getElement());
     }
 }

@@ -21,8 +21,6 @@ public class PuzzleTileCellRenderer extends JLabel implements TableCellRenderer 
             boolean hasFocus, int row,
             int column) {
         table.setShowGrid(false);
-     //   String text = (((Integer) value).intValue() == 0) ? "" : ((Integer) value).toString();
-     //   setText(text);
 
        ImageLoader loader = ImageLoader.getLoader();
        setText("");
@@ -30,7 +28,7 @@ public class PuzzleTileCellRenderer extends JLabel implements TableCellRenderer 
         if(row == 2 && column ==5)
            setIcon(loader.getIcon(Properties.DOOR));
         else
-        switch(((Integer) value).intValue()){
+        switch(((Integer) value).intValue()){ //????
             case 1:
                setIcon(loader.getIcon(Properties.FORKLIFT));
                break;
@@ -57,7 +55,25 @@ public class PuzzleTileCellRenderer extends JLabel implements TableCellRenderer 
                break;
             case 9:
                setIcon(loader.getIcon(Properties.BOX4_V));
-               break;     
+               break;
+            case 14:
+               setIcon(loader.getIcon(Properties.BOX2_H2));
+               break;
+            case 15:
+               setIcon(loader.getIcon(Properties.BOX2_V2));
+               break;
+            case 16:
+               setIcon(loader.getIcon(Properties.BOX3_H2));
+               break;
+            case 17:
+               setIcon(loader.getIcon(Properties.BOX3_V2));
+               break;
+            case 18:
+               setIcon(loader.getIcon(Properties.BOX4_H2));
+               break;
+            case 19:
+               setIcon(loader.getIcon(Properties.BOX4_V2));
+               break;  
             default:
                 setIcon(loader.getIcon(Properties.EMPTY_IMAGE));
                 break;

@@ -34,14 +34,14 @@ import searchmethods.SearchMethod;
 
 public class MainFrame extends JFrame {
 
-    private int[][] initialMatrix = {{0, 0, 0, 0 , 0, 0}, 
-        {0, 0, 0, 4, 0, 0}, 
-        {1, 0, 0, 3, 0, 0}, 
-        {0, 0, 0, 2, 0, 0}, 
-        {0, 0, 0, 0, 0, 0}, 
-        {0, 0, 0, 0, 0, 0}};
+    private int[][] initialMatrix = {{0, 0, 0, 0, 2, 0}, 
+        {0, 0, 0, 4, 4, 0}, 
+        {1, 0, 0, 0, 7, 0}, 
+        {0, 0, 0, 0, 7, 0}, 
+        {0, 0, 0, 0, 7, 0}, 
+        {0, 0, 0, 4, 4, 0}};
     
-    private PuzzleAgent agent = new PuzzleAgent(new PuzzleState(initialMatrix));
+    private PuzzleAgent agent = new PuzzleAgent(new PuzzleState(ArrayIds.toMatrixWithIds(initialMatrix)));
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
     private JLabel labelSearchParameter = new JLabel("limit/beam size:");
@@ -67,6 +67,7 @@ public class MainFrame extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Eight Puzzle");
+        System.out.println(ArrayIds.matrixToString(ArrayIds.toMatrixWithIds(initialMatrix)));
 
         JPanel contentPane = (JPanel) this.getContentPane();
         contentPane.setLayout(new BorderLayout());
