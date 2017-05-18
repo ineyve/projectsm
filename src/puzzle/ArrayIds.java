@@ -10,18 +10,6 @@ package puzzle;
  * @author ineyv
  */
 public class ArrayIds {
-   private int[][] matrixIds;
-   private static ArrayIds instance = null;
-   protected ArrayIds() {
-      // Exists only to defeat instantiation.
-   }
-   public static ArrayIds getInstance() {
-      if(instance == null) {
-         instance = new ArrayIds();
-      }
-      return instance;
-   }
-   
    public static int[][][] toMatrixWithIds(int [][] matrix)
    {
        /*
@@ -57,15 +45,16 @@ public class ArrayIds {
                         case 1: case 2: case 4: case 6: case 8:
                             toMatrix[l][c][0]=id;
                             toMatrix[l][c][1]=val;
-                            //if(val>=4)
-                                //toMatrix[l][c][2]+=10;//+10; change the image of the first element!!
+                            toMatrix[l][c][2]=val;
+                            if(val>=4)
+                                toMatrix[l][c][2]+=10;//+10; change the image of the first element!!
                             id++;
                         break;
                     }
                 }else{
                     toMatrix[l][c][0]=id-1;
                     toMatrix[l][c][1]=val;
-                    //toMatrix[l][c][2]=val;
+                    toMatrix[l][c][2]=val;
                     largePiece--;
                 }
             }
@@ -95,8 +84,9 @@ public class ArrayIds {
                         case 3: case 5: case 7: case 9:
                             toMatrix[l][c][0]=id;
                             toMatrix[l][c][1]=val;
-                            //if(val>=5)
-                            //    toMatrix[l][c][2]+=10;//+10; //change the image of the first element!!
+                            toMatrix[l][c][2]=val;
+                            if(val>=5)
+                                toMatrix[l][c][2]+=10;//+10; //change the image of the first element!!
                             id++;
                         break;
                     }
@@ -104,7 +94,7 @@ public class ArrayIds {
                 }else{
                     toMatrix[l][c][0]=id-1;
                     toMatrix[l][c][1]=val;
-                    //toMatrix[l][c][2]=val;
+                    toMatrix[l][c][2]=val;
                     largePiece--;
                 }
                 
@@ -130,6 +120,15 @@ public class ArrayIds {
            for(int c=0; c<Matrix.length; c++)
            {
                output+=Matrix[l][c][1]+",";
+           }
+           output+="\n";
+       }
+       output+="||\n";
+       for(int l=0; l<Matrix.length; l++)
+       {
+           for(int c=0; c<Matrix.length; c++)
+           {
+               output+=Matrix[l][c][2]+",";
            }
            output+="\n";
        }

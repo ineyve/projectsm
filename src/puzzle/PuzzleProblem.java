@@ -29,7 +29,7 @@ public class PuzzleProblem extends Problem<PuzzleState> {
         {
             for(int c=0; c < initialState.getNumColumns(); c++)
             {
-                int val = initialState.getTileValue(l, c);
+                int val = initialState.getTileType(l, c);
                 if(largePiece<=0)
                 {
                     switch(val){
@@ -62,7 +62,7 @@ public class PuzzleProblem extends Problem<PuzzleState> {
         {
             for(int l=0; l < initialState.getNumLines(); l++)
             {
-                int val = initialState.getTileValue(l, c);
+                int val = initialState.getTileType(l, c);
                 if(largePiece<=0)
                 {
                     
